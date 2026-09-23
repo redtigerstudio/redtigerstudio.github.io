@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Red Tiger Studio</title>
-<meta name="description" content="Herramientas y diseño para gente que hace música y video. TIGER ENCODE, DubConvert, Dub Explorer, HORNS.">
+<meta name="description" content="Herramientas y diseño para gente que hace música y video. TIGER ENCODE, DubConvert, MetroPulse, Dub Explorer y HORNS.">
 <meta property="og:title" content="Red Tiger Studio">
 <meta property="og:description" content="Herramientas y diseño para gente que hace música y video.">
 <meta property="og:type" content="website">
@@ -25,6 +25,7 @@
   --dub:#ff5722;
   --explorer:#e04a53;
   --horns:#e0a24a;
+  --pulse:#ff8c32;
 
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
   --display:'Big Shoulders Display','Arial Narrow',sans-serif;
@@ -227,6 +228,9 @@ body{
   transition:filter .6s ease,transform .8s cubic-bezier(.2,.8,.2,1);
 }
 .ch:hover .ch-art img{filter:none;transform:scale(1.05)}
+/* Arte vertical: encaja completo en vez de recortarse */
+.ch-art.tall img{object-fit:contain;padding:14px;transform:none}
+.ch:hover .ch-art.tall img{transform:scale(1.03)}
 .ch-art::after{
   content:'';position:absolute;inset:0;
   background:linear-gradient(to top,rgba(6,6,6,.5),transparent 55%);
@@ -316,7 +320,7 @@ body{
 
   <div class="ticker" aria-hidden="true">
     <div>
-      <s>—</s>Conversión de video<s>—</s>Conversión de audio<s>—</s>Producción musical<s>—</s>Práctica instrumental<s>—</s>Identidad visual<s>—</s>Motion graphics<s>—</s>Diseño de producto<s>—</s>Hecho en México<s>—</s>Conversión de video<s>—</s>Conversión de audio<s>—</s>Producción musical<s>—</s>Práctica instrumental<s>—</s>Identidad visual<s>—</s>Motion graphics<s>—</s>Diseño de producto<s>—</s>Hecho en México<s>—</s>
+      <s>—</s>Conversión de video<s>—</s>Conversión de audio<s>—</s>Metrónomo de muñeca<s>—</s>Producción musical<s>—</s>Práctica instrumental<s>—</s>Identidad visual<s>—</s>Motion graphics<s>—</s>Diseño de producto<s>—</s>Hecho en México<s>—</s>Conversión de video<s>—</s>Conversión de audio<s>—</s>Metrónomo de muñeca<s>—</s>Producción musical<s>—</s>Práctica instrumental<s>—</s>Identidad visual<s>—</s>Motion graphics<s>—</s>Diseño de producto<s>—</s>Hecho en México<s>—</s>
     </div>
   </div>
 
@@ -358,8 +362,26 @@ body{
       <div class="ch-art"><img src="assets/dubconvert.jpg" alt="Interfaz de DubConvert" loading="lazy"></div>
     </article>
 
-    <article class="ch rise" style="--accent:var(--explorer)">
+    <article class="ch rise" style="--accent:var(--pulse)">
       <div class="ch-num">03</div>
+      <div>
+        <h2 class="ch-name"><a href="https://github.com/REDTIGER_USER/metropulse">MetroPulse</a></h2>
+        <p class="ch-tag">Metrónomo para Apple Watch. Un solo dial que ocupa toda la pantalla: BPM legible a distancia de brazo mientras tocas.</p>
+        <div class="chips">
+          <span class="chip">SwiftUI</span><span class="chip">watchOS</span>
+          <span class="chip">30–260 BPM</span><span class="chip">Digital Crown</span>
+          <span class="chip">Háptico</span>
+        </div>
+        <div class="meta">
+          <span class="state"><span class="dot"></span>Funcionando en dispositivo</span>
+          <a class="get" href="https://github.com/REDTIGER_USER/metropulse">Ver proyecto →</a>
+        </div>
+      </div>
+      <div class="ch-art tall"><img src="assets/metropulse.jpg" alt="MetroPulse en Apple Watch" loading="lazy"></div>
+    </article>
+
+    <article class="ch rise" style="--accent:var(--explorer)">
+      <div class="ch-num">04</div>
       <div>
         <h2 class="ch-name"><a href="https://github.com/REDTIGER_USER/dub-explorer">Dub Explorer</a></h2>
         <p class="ch-tag">DAW gamificado y comunidad. Entras por una radio pirata que te cuenta una historia, sales con un remix publicado.</p>
@@ -376,7 +398,7 @@ body{
     </article>
 
     <article class="ch rise" style="--accent:var(--horns)">
-      <div class="ch-num">04</div>
+      <div class="ch-num">05</div>
       <div>
         <h2 class="ch-name"><a href="https://github.com/REDTIGER_USER/horns">Horns</a></h2>
         <p class="ch-tag">Práctica para músicos de viento. Afinador, metrónomo y digitaciones en una sola app, todo en la clave real de tu instrumento.</p>
