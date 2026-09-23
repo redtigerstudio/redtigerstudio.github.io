@@ -111,9 +111,13 @@ body{
   margin:0;
 }
 .wordmark span{display:block}
-.wordmark .l2{padding-left:clamp(0px,7vw,140px)}
+.wordmark .mark{
+  display:block;width:min(74vw,760px);height:auto;
+  margin:0 0 -.04em;
+}
 .wordmark .l3{
-  padding-left:clamp(0px,3vw,64px);
+  padding-left:clamp(8px,6vw,120px);
+  font-size:clamp(52px,12.5vw,190px);
   color:transparent;
   -webkit-text-stroke:1px var(--line-2);
 }
@@ -256,7 +260,14 @@ body{
   transition:border-color .3s ease}
 .foot a:hover{border-color:var(--tiger)}
 .sig{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);
-  text-align:right;white-space:nowrap}
+  text-align:right;white-space:nowrap;line-height:1.9}
+.crest{
+  display:block;width:88px;height:auto;margin:0 0 14px auto;
+  opacity:.4;filter:invert(1) grayscale(1);
+  transition:opacity .4s ease;
+}
+.foot:hover .crest{opacity:.7}
+@media(max-width:700px){.crest{margin-left:0}}
 @media(max-width:700px){
   .foot{grid-template-columns:1fr}
   .sig{text-align:left}
@@ -302,8 +313,7 @@ body{
     <div class="boot">
       <p class="eyebrow">Estudio de diseño y herramientas</p>
       <h1 class="wordmark">
-        <span>Red</span>
-        <span class="l2">Tiger</span>
+        <img src="assets/redtiger-wordmark.png" alt="Red Tiger" class="mark">
         <span class="l3">Studio</span>
       </h1>
     </div>
@@ -383,35 +393,38 @@ body{
     <article class="ch rise" style="--accent:var(--explorer)">
       <div class="ch-num">04</div>
       <div>
-        <h2 class="ch-name"><a href="https://github.com/redtigerstudio/dub-explorer">Dub Explorer</a></h2>
-        <p class="ch-tag">DAW gamificado y comunidad. Entras por una radio pirata que te cuenta una historia, sales con un remix publicado.</p>
+        <h2 class="ch-name"><a href="https://dub.redtiger.studio">Dub Explorer</a></h2>
+        <p class="ch-tag">Consola de dub en vivo dentro del navegador. Ocho canales, master con echo y reverb, sampler, MIDI y grabación. Sin instalar nada.</p>
         <div class="chips">
-          <span class="chip">Producción</span><span class="chip">Comunidad</span>
-          <span class="chip">Narrativa</span><span class="chip">Dub</span>
+          <span class="chip">Stems</span><span class="chip">FX</span>
+          <span class="chip">Sampler</span><span class="chip">MIDI</span>
+          <span class="chip">Record</span><span class="chip">Rhodes MK II</span>
         </div>
         <div class="meta">
-          <span class="state soon"><span class="dot"></span>En propuesta</span>
-          <a class="get" href="https://github.com/redtigerstudio/dub-explorer">Ver proyecto →</a>
+          <span class="state"><span class="dot"></span>En vivo</span>
+          <a class="get" href="https://dub.redtiger.studio">Abrir la consola →</a>
+          <a class="get" href="https://github.com/redtigerstudio/dub-explorer">Repo →</a>
         </div>
       </div>
-      <div class="ch-art"><img src="assets/dub-explorer.jpg" alt="Radio pirata de Dub Explorer" loading="lazy"></div>
+      <div class="ch-art tall"><img src="assets/dub-explorer.jpg" alt="Dub Explorer — Play the Dub" loading="lazy"></div>
     </article>
 
     <article class="ch rise" style="--accent:var(--horns)">
       <div class="ch-num">05</div>
       <div>
         <h2 class="ch-name"><a href="https://github.com/redtigerstudio/horns">Horns</a></h2>
-        <p class="ch-tag">Práctica para músicos de viento. Afinador, metrónomo y digitaciones en una sola app, todo en la clave real de tu instrumento.</p>
+        <p class="ch-tag">La escala escrita como tú la lees. Partitura, digitaciones, metrónomo y afinador en una pantalla, transpuesto a la clave de tu instrumento.</p>
         <div class="chips">
           <span class="chip">Trompeta</span><span class="chip">Trombón</span>
-          <span class="chip">Saxofón</span><span class="chip">440 Hz</span>
+          <span class="chip">Saxofón</span><span class="chip">Afinador</span>
+          <span class="chip">Metrónomo</span><span class="chip">PWA</span>
         </div>
         <div class="meta">
-          <span class="state soon"><span class="dot"></span>En concepto</span>
+          <span class="state soon"><span class="dot"></span>Terminada · sin desplegar</span>
           <a class="get" href="https://github.com/redtigerstudio/horns">Ver proyecto →</a>
         </div>
       </div>
-      <div class="ch-art"><img src="assets/horns.jpg" alt="Póster de la app Horns" loading="lazy"></div>
+      <div class="ch-art"><img src="assets/horns.jpg" alt="HORNS — la escala escrita como tú la lees" loading="lazy"></div>
     </article>
 
   </section>
@@ -421,7 +434,10 @@ body{
       <h2>¿Trabajamos<br>juntos?</h2>
       <p>Diseño de producto, identidad visual, motion graphics y apps de escritorio. Escríbeme a <a href="mailto:ricardo.casanova.n@gmail.com">ricardo.casanova.n@gmail.com</a>.</p>
     </div>
-    <p class="sig">Made by Red Tiger Std<br>MX · 2026</p>
+    <div class="sig">
+      <img src="assets/redtiger-crest.png" alt="" class="crest">
+      Made by Red Tiger Std<br>MX · 2026
+    </div>
   </footer>
 
 </main>
