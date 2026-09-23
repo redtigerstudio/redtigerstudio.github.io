@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red Tiger Studio</title>
+<meta name="description" content="Herramientas y diseño para gente que hace música y video. TIGER ENCODE, DubConvert, Dub Explorer, HORNS.">
+<meta property="og:title" content="Red Tiger Studio">
+<meta property="og:description" content="Herramientas y diseño para gente que hace música y video.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060606;
+  --bg-2:#0b0b0b;
+  --line:#1e1e1e;
+  --line-2:#2c2c2c;
+  --ink:#e6e6e6;
+  --dim:#7d7d7d;
+  --faint:#4a4a4a;
+
+  --tiger:#00e5ff;
+  --dub:#ff5722;
+  --explorer:#e04a53;
+  --horns:#e0a24a;
+
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --display:'Big Shoulders Display','Arial Narrow',sans-serif;
+
+  --gut:clamp(16px,4vw,64px);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--mono);
+  font-weight:300;
+  font-size:14px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── grano + scanlines ───────────────────────────────── */
+.grain,.scan{position:fixed;inset:0;pointer-events:none;z-index:200}
+.grain{opacity:.16;mix-blend-mode:overlay}
+.scan{
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0 3px,
+    rgba(0,0,0,.35) 3px 4px);
+  opacity:.35;
+}
+.vig{
+  position:fixed;inset:0;pointer-events:none;z-index:199;
+  background:radial-gradient(ellipse 120% 90% at 50% 40%,transparent 40%,rgba(0,0,0,.75) 100%);
+}
+
+/* ── barra de estado ─────────────────────────────────── */
+.status{
+  position:fixed;top:0;left:0;right:0;z-index:150;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;
+  padding:14px var(--gut);
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--faint);
+  background:linear-gradient(to bottom,rgba(6,6,6,.96),rgba(6,6,6,0));
+  backdrop-filter:blur(3px);
+}
+.status b{font-weight:500;color:var(--dim)}
+.led{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--tiger);margin-right:7px;vertical-align:1px;
+  box-shadow:0 0 8px var(--tiger);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.status .r{display:flex;align-items:center;white-space:nowrap}
+@media(max-width:620px){.status .hide-s{display:none}}
+
+/* ── hero ────────────────────────────────────────────── */
+.hero{
+  min-height:100svh;
+  padding:110px var(--gut) 60px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;
+}
+.hero::after{
+  content:'';position:absolute;left:var(--gut);right:var(--gut);bottom:0;
+  height:1px;background:var(--line);
+}
+.eyebrow{
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint);
+  display:flex;align-items:center;gap:12px;margin-bottom:8px;
+}
+.eyebrow::after{content:'';flex:1;height:1px;background:var(--line);max-width:200px}
+
+.wordmark{
+  font-family:var(--display);
+  font-weight:900;
+  font-size:clamp(68px,17vw,260px);
+  line-height:.82;
+  letter-spacing:-.015em;
+  text-transform:uppercase;
+  margin:0;
+}
+.wordmark span{display:block}
+.wordmark .l2{padding-left:clamp(0px,7vw,140px)}
+.wordmark .l3{
+  padding-left:clamp(0px,3vw,64px);
+  color:transparent;
+  -webkit-text-stroke:1px var(--line-2);
+}
+
+.hero-foot{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:28px;align-items:end;
+  padding-bottom:28px;
+}
+.lede{
+  max-width:44ch;font-size:13px;line-height:1.75;color:var(--dim);
+}
+.lede em{color:var(--ink);font-style:normal;font-weight:400}
+.scrollcue{
+  font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);
+  white-space:nowrap;
+}
+.scrollcue i{display:inline-block;font-style:normal;animation:down 2s ease-in-out infinite}
+@keyframes down{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media(max-width:700px){
+  .hero-foot{grid-template-columns:1fr}
+  .scrollcue{display:none}
+}
+
+/* ── ticker ──────────────────────────────────────────── */
+.ticker{
+  border-bottom:1px solid var(--line);
+  overflow:hidden;white-space:nowrap;
+  padding:11px 0;
+  font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);
+}
+.ticker div{display:inline-block;animation:slide 44s linear infinite}
+.ticker s{text-decoration:none;color:var(--line-2);padding:0 20px}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── canales ─────────────────────────────────────────── */
+.rack{padding:0 var(--gut)}
+
+.ch{
+  --accent:var(--tiger);
+  display:grid;
+  grid-template-columns:72px 1fr minmax(260px,38%);
+  gap:clamp(20px,4vw,56px);
+  align-items:center;
+  padding:clamp(40px,7vw,90px) 0;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.ch::before{
+  content:'';position:absolute;left:0;top:0;bottom:-1px;width:2px;
+  background:var(--accent);
+  transform:scaleY(0);transform-origin:top;
+  transition:transform .55s cubic-bezier(.2,.8,.2,1);
+}
+.ch:hover::before,.ch:focus-within::before{transform:scaleY(1)}
+
+.ch-num{
+  font-family:var(--display);font-weight:400;font-size:clamp(34px,5vw,64px);
+  line-height:1;color:var(--line-2);
+  transition:color .4s ease;
+  padding-top:4px;
+}
+.ch:hover .ch-num{color:var(--accent)}
+
+.ch-name{
+  font-family:var(--display);font-weight:900;
+  font-size:clamp(38px,6.6vw,86px);
+  line-height:.92;letter-spacing:-.01em;text-transform:uppercase;
+  margin:0 0 6px;
+}
+.ch-name a{
+  color:inherit;text-decoration:none;
+  background-image:linear-gradient(var(--accent),var(--accent));
+  background-size:0% 2px;background-position:0 100%;background-repeat:no-repeat;
+  transition:background-size .45s cubic-bezier(.2,.8,.2,1),color .3s ease;
+}
+.ch:hover .ch-name a{background-size:100% 2px;color:var(--accent)}
+.ch-name a:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:2px}
+
+.ch-tag{font-size:13px;color:var(--dim);margin:0 0 20px;max-width:46ch;line-height:1.7}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}
+.chip{
+  font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  border:1px solid var(--line);padding:5px 10px;color:var(--faint);
+  transition:border-color .35s ease,color .35s ease;
+}
+.ch:hover .chip{border-color:var(--line-2);color:var(--dim)}
+
+.meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.state{display:flex;align-items:center;gap:8px;color:var(--dim)}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex:none}
+.state.soon .dot{background:var(--faint);box-shadow:none}
+.state.soon{color:var(--faint)}
+.get{
+  color:var(--accent);text-decoration:none;
+  border-bottom:1px solid transparent;padding-bottom:2px;
+  transition:border-color .3s ease;
+}
+.get:hover,.get:focus-visible{border-color:var(--accent)}
+
+.ch-art{
+  position:relative;aspect-ratio:4/3;overflow:hidden;
+  background:var(--bg-2);border:1px solid var(--line);
+}
+.ch-art img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(.55) contrast(1.04) brightness(.86);
+  transform:scale(1.015);
+  transition:filter .6s ease,transform .8s cubic-bezier(.2,.8,.2,1);
+}
+.ch:hover .ch-art img{filter:none;transform:scale(1.05)}
+.ch-art::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(6,6,6,.5),transparent 55%);
+  pointer-events:none;
+}
+
+@media(max-width:900px){
+  .ch{grid-template-columns:44px 1fr;gap:18px}
+  .ch-art{grid-column:1/-1;order:3;aspect-ratio:16/9;margin-top:22px}
+}
+
+/* ── pie ─────────────────────────────────────────────── */
+.foot{
+  padding:clamp(60px,10vw,120px) var(--gut) 40px;
+  display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;
+}
+.foot h2{
+  font-family:var(--display);font-weight:900;text-transform:uppercase;
+  font-size:clamp(30px,5.5vw,68px);line-height:.95;margin:0 0 14px;letter-spacing:-.01em;
+}
+.foot p{margin:0;color:var(--dim);max-width:40ch;font-size:13px}
+.foot a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2);
+  transition:border-color .3s ease}
+.foot a:hover{border-color:var(--tiger)}
+.sig{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);
+  text-align:right;white-space:nowrap}
+@media(max-width:700px){
+  .foot{grid-template-columns:1fr}
+  .sig{text-align:left}
+}
+
+/* ── revelado ────────────────────────────────────────── */
+.rise{opacity:0;transform:translateY(26px)}
+.in .rise,.rise.in{opacity:1;transform:none;
+  transition:opacity .85s cubic-bezier(.2,.8,.2,1),transform .85s cubic-bezier(.2,.8,.2,1)}
+
+.boot>*{opacity:0;animation:boot .95s cubic-bezier(.2,.8,.2,1) forwards}
+.boot>*:nth-child(1){animation-delay:.10s}
+.boot>*:nth-child(2){animation-delay:.20s}
+.boot>*:nth-child(3){animation-delay:.32s}
+@keyframes boot{to{opacity:1;transform:none}}
+.boot>*{transform:translateY(20px)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important}
+  .rise{opacity:1;transform:none}
+  .boot>*{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<svg class="grain" aria-hidden="true">
+  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter>
+  <rect width="100%" height="100%" filter="url(#n)"/>
+</svg>
+<div class="scan" aria-hidden="true"></div>
+<div class="vig" aria-hidden="true"></div>
+
+<header class="status">
+  <b>Red Tiger Std</b>
+  <span class="r"><span class="led"></span><span class="hide-s">System_Ready&nbsp;·&nbsp;</span>MX&nbsp;2026</span>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="boot">
+      <p class="eyebrow">Estudio de diseño y herramientas</p>
+      <h1 class="wordmark">
+        <span>Red</span>
+        <span class="l2">Tiger</span>
+        <span class="l3">Studio</span>
+      </h1>
+    </div>
+
+    <div class="hero-foot boot">
+      <p class="lede">
+        Hacemos <em>herramientas para gente que hace música y video</em> —
+        apps de escritorio que corren en tu máquina, sin nube y sin suscripción.
+        Y el diseño que las envuelve.
+      </p>
+      <p class="scrollcue">Baja para ver &nbsp;<i>↓</i></p>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div>
+      <s>—</s>Conversión de video<s>—</s>Conversión de audio<s>—</s>Producción musical<s>—</s>Práctica instrumental<s>—</s>Identidad visual<s>—</s>Motion graphics<s>—</s>Diseño de producto<s>—</s>Hecho en México<s>—</s>Conversión de video<s>—</s>Conversión de audio<s>—</s>Producción musical<s>—</s>Práctica instrumental<s>—</s>Identidad visual<s>—</s>Motion graphics<s>—</s>Diseño de producto<s>—</s>Hecho en México<s>—</s>
+    </div>
+  </div>
+
+  <section class="rack" aria-label="Proyectos">
+
+    <article class="ch rise" style="--accent:var(--tiger)">
+      <div class="ch-num">01</div>
+      <div>
+        <h2 class="ch-name"><a href="https://github.com/REDTIGER_USER/tiger-encode">Tiger Encode</a></h2>
+        <p class="ch-tag">Conversor de video para macOS. Arrastras, eliges formato, conviertes. Preview integrado y cola para lotes grandes.</p>
+        <div class="chips">
+          <span class="chip">MP4 H.264</span><span class="chip">H.265</span>
+          <span class="chip">ProRes</span><span class="chip">WEBM</span>
+          <span class="chip">GIF</span><span class="chip">4K</span>
+        </div>
+        <div class="meta">
+          <span class="state"><span class="dot"></span>Disponible</span>
+          <a class="get" href="https://github.com/REDTIGER_USER/tiger-encode">Ver proyecto →</a>
+        </div>
+      </div>
+      <div class="ch-art"><img src="assets/tiger-encode.jpg" alt="Interfaz de Tiger Encode" loading="lazy"></div>
+    </article>
+
+    <article class="ch rise" style="--accent:var(--dub)">
+      <div class="ch-num">02</div>
+      <div>
+        <h2 class="ch-name"><a href="https://github.com/REDTIGER_USER/dubconvert">DubConvert</a></h2>
+        <p class="ch-tag">Conversor de audio para macOS. Lotes completos en una sola ventana, con forma de onda y espectro de frecuencia.</p>
+        <div class="chips">
+          <span class="chip">MP3</span><span class="chip">FLAC</span>
+          <span class="chip">ALAC</span><span class="chip">WAV</span>
+          <span class="chip">OPUS</span><span class="chip">320 kbps</span>
+        </div>
+        <div class="meta">
+          <span class="state"><span class="dot"></span>Disponible</span>
+          <a class="get" href="https://github.com/REDTIGER_USER/dubconvert">Ver proyecto →</a>
+        </div>
+      </div>
+      <div class="ch-art"><img src="assets/dubconvert.jpg" alt="Interfaz de DubConvert" loading="lazy"></div>
+    </article>
+
+    <article class="ch rise" style="--accent:var(--explorer)">
+      <div class="ch-num">03</div>
+      <div>
+        <h2 class="ch-name"><a href="https://github.com/REDTIGER_USER/dub-explorer">Dub Explorer</a></h2>
+        <p class="ch-tag">DAW gamificado y comunidad. Entras por una radio pirata que te cuenta una historia, sales con un remix publicado.</p>
+        <div class="chips">
+          <span class="chip">Producción</span><span class="chip">Comunidad</span>
+          <span class="chip">Narrativa</span><span class="chip">Dub</span>
+        </div>
+        <div class="meta">
+          <span class="state soon"><span class="dot"></span>En propuesta</span>
+          <a class="get" href="https://github.com/REDTIGER_USER/dub-explorer">Ver proyecto →</a>
+        </div>
+      </div>
+      <div class="ch-art"><img src="assets/dub-explorer.jpg" alt="Radio pirata de Dub Explorer" loading="lazy"></div>
+    </article>
+
+    <article class="ch rise" style="--accent:var(--horns)">
+      <div class="ch-num">04</div>
+      <div>
+        <h2 class="ch-name"><a href="https://github.com/REDTIGER_USER/horns">Horns</a></h2>
+        <p class="ch-tag">Práctica para músicos de viento. Afinador, metrónomo y digitaciones en una sola app, todo en la clave real de tu instrumento.</p>
+        <div class="chips">
+          <span class="chip">Trompeta</span><span class="chip">Trombón</span>
+          <span class="chip">Saxofón</span><span class="chip">440 Hz</span>
+        </div>
+        <div class="meta">
+          <span class="state soon"><span class="dot"></span>En concepto</span>
+          <a class="get" href="https://github.com/REDTIGER_USER/horns">Ver proyecto →</a>
+        </div>
+      </div>
+      <div class="ch-art"><img src="assets/horns.jpg" alt="Póster de la app Horns" loading="lazy"></div>
+    </article>
+
+  </section>
+
+  <footer class="foot">
+    <div class="rise">
+      <h2>¿Trabajamos<br>juntos?</h2>
+      <p>Diseño de producto, identidad visual, motion graphics y apps de escritorio. Escríbeme a <a href="mailto:ricardo.casanova.n@gmail.com">ricardo.casanova.n@gmail.com</a>.</p>
+    </div>
+    <p class="sig">Made by Red Tiger Std<br>MX · 2026</p>
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  var items = document.querySelectorAll('.rise');
+  if(!('IntersectionObserver' in window)){
+    items.forEach(function(el){el.classList.add('in')});
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  },{threshold:.12, rootMargin:'0px 0px -8% 0px'});
+  items.forEach(function(el){ io.observe(el) });
+})();
+</script>
+
+</body>
+</html>
